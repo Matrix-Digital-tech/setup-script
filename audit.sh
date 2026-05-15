@@ -11,8 +11,55 @@ set -euo pipefail
 
 OS="$(uname)"
 REPORT_DATE="$(date '+%Y-%m-%d %H:%M')"
+REDACTED_COUNT=0
 
 hr() { echo ""; echo "────────────────────────────────────────"; }
+
+# Prints a config file with secret values redacted.
+# Matches lines where the variable name suggests a secret, then replaces
+# the value with [REDACTED]. The variable name is always kept so Claude
+# can see what services are configured without seeing the actual credentials.
+#
+# Patterns redacted: anything containing KEY, SECRET, TOKEN, PASSWORD, PWD,
+# CREDENTIAL, BEARER, AUTH, API (as a variable name segment), plus AWS/GCP/Azure
+# credential variables and raw private key blocks.
+print_config_redacted() {
+  local file="$1"
+  local file_redacted=0
+
+  # Specific known credential variable names — matched anywhere on the line
+  # (catches both `export VAR=value` and inline `VAR=value` inside aliases)
+  local KNOWN_CREDS='AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|AWS_BEARER_TOKEN|GOOGLE_APPLICATION_CREDENTIALS|AZURE_CLIENT_SECRET|ANTHROPIC_API_KEY|OPENAI_API_KEY|PERPLEXITY_API_KEY|GITHUB_TOKEN|NPM_TOKEN|KION_API_KEY'
+
+  # Generic patterns: variable names that contain secret-sounding segments,
+  # anchored to line start or preceded by export/whitespace to avoid false positives
+  local GENERIC_PATTERN='(^|[[:space:]]|export )[A-Z0-9_]*(API_KEY|_SECRET|_TOKEN|_PASSWORD|_PASSWD|_PWD|_CREDENTIAL|BEARER_TOKEN|PRIVATE_KEY)[A-Z0-9_]*[[:space:]]*=.+'
+
+  while IFS= read -r line; do
+    # Skip blank lines and pure comments — nothing to redact
+    if [[ -z "$line" ]] || [[ "$line" =~ ^[[:space:]]*# ]]; then
+      echo "$line"
+      continue
+    fi
+
+    if echo "$line" | grep -qE "($KNOWN_CREDS)[[:space:]]*=" \
+    || echo "$line" | grep -qiE "$GENERIC_PATTERN" \
+    || echo "$line" | grep -qE '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----'; then
+      # Extract the variable name(s) found, so the reader knows what was redacted
+      matched=$(echo "$line" | grep -oiE "($KNOWN_CREDS|[A-Z0-9_]*(API_KEY|_SECRET|_TOKEN|_PASSWORD|_PASSWD|_PWD|_CREDENTIAL|PRIVATE_KEY)[A-Z0-9_]*)[[:space:]]*=" | tr -d '= ' | tr '\n' ',' | sed 's/,$//')
+      echo "# [REDACTED — contains credential: ${matched:-secret variable}]"
+      (( file_redacted++ )) || true
+      (( REDACTED_COUNT++ )) || true
+    else
+      echo "$line"
+    fi
+  done < "$file"
+
+  if (( file_redacted > 0 )); then
+    echo ""
+    echo "# ⚠ $file_redacted line(s) redacted from this file"
+  fi
+}
 
 echo "# Machine Audit Report"
 echo "# Generated: $REPORT_DATE"
@@ -161,26 +208,39 @@ fi
 # ── Shell config files (both platforms) ──────────────────────────────────────
 hr; echo "## ~/.zshrc"
 if [[ -f "$HOME/.zshrc" ]]; then
-  cat "$HOME/.zshrc"
+  print_config_redacted "$HOME/.zshrc"
 else
   echo "(not found)"
 fi
 
 hr; echo "## ~/.zshrc.local"
 if [[ -f "$HOME/.zshrc.local" ]]; then
-  cat "$HOME/.zshrc.local"
+  print_config_redacted "$HOME/.zshrc.local"
 else
   echo "(not found)"
 fi
 
 hr; echo "## ~/.zshrc.new (pending merge)"
 if [[ -f "$HOME/.zshrc.new" ]]; then
-  cat "$HOME/.zshrc.new"
+  print_config_redacted "$HOME/.zshrc.new"
 else
   echo "(not found)"
 fi
 
+# ── Secret redaction summary ──────────────────────────────────────────────────
 hr
+if (( REDACTED_COUNT > 0 )); then
+  echo ""
+  echo "## Security summary"
+  echo "  ✓ $REDACTED_COUNT potential secret(s) detected and redacted from shell config files."
+  echo "  Variable names are shown so Claude knows what services are configured."
+  echo "  Values were NOT included in this report."
+else
+  echo ""
+  echo "## Security summary"
+  echo "  ✓ No secrets detected in shell config files."
+fi
+
 echo ""
 echo "# Paste this output into a Claude Code session in the setup-script repo and ask:"
 echo "# 'Compare this audit to the Brewfile and setup scripts."
