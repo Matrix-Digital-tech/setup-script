@@ -173,6 +173,41 @@ RTX 5090 (Blackwell) requires driver 570+ with Open Kernel Modules. The script b
 
 ---
 
+## Secret scanning
+
+Two-layer protection against accidentally committing or pushing secrets.
+
+**Layer 1 — gitleaks (local, pre-commit)**
+
+Installed automatically by the setup scripts (Homebrew on macOS, binary on Ubuntu). Blocks any commit that contains a detected secret before it ever touches git history.
+
+```bash
+# Runs automatically on every git commit — no action needed
+
+# Manual scan of any repo at any time
+gitleaks detect --source . --redact
+
+# Scan git history (useful on existing repos)
+gitleaks detect --source . --redact --log-opts="HEAD~50..HEAD"
+```
+
+To temporarily bypass (not recommended):
+```bash
+git commit --no-verify
+```
+
+**Layer 2 — GitHub Secret Scanning (remote)**
+
+GitHub scans every push and alerts you — or blocks the push entirely — if a secret pattern is detected. Free for public repos; available on private repos with GitHub Advanced Security.
+
+Enable it for the Matrix-Digital-tech org:
+1. Go to: **https://github.com/organizations/Matrix-Digital-tech/settings/security_analysis**
+2. Enable **Secret scanning** and **Push protection**
+
+Push protection means GitHub will block the push at the remote, even if the local hook was bypassed.
+
+---
+
 ## Auditing a machine
 
 Run `audit.sh` on any machine to generate an inventory of everything installed. Useful for finding tools on an existing machine that should be added to the setup script.

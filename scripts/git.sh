@@ -32,8 +32,38 @@ git config --global alias.aliases "config --get-regexp alias"
 
 print_success "Git configured for $GIT_NAME <$GIT_EMAIL>"
 
-# GitHub auth
+# ── gitleaks pre-commit hook ──────────────────────────────────────────────────
+if command_exists gitleaks; then
+  HOOKS_DIR="$(git config --global core.hooksPath 2>/dev/null || echo "$HOME/.config/git/hooks")"
+  mkdir -p "$HOOKS_DIR"
+
+  cat > "$HOOKS_DIR/pre-commit" << 'HOOK'
+#!/usr/bin/env bash
+# gitleaks — scan staged files for secrets before every commit
+if command -v gitleaks &>/dev/null; then
+  gitleaks protect --staged --redact --no-banner -q
+  if [[ $? -ne 0 ]]; then
+    echo ""
+    echo "  gitleaks: potential secret detected in staged files."
+    echo "  Review the output above, remove the secret, then commit again."
+    echo "  To skip this check (not recommended): git commit --no-verify"
+    exit 1
+  fi
+fi
+HOOK
+
+  chmod +x "$HOOKS_DIR/pre-commit"
+  git config --global core.hooksPath "$HOOKS_DIR"
+  print_success "gitleaks pre-commit hook installed — scans every commit for secrets"
+  print_info "Manual scan of any repo: gitleaks detect --source . --redact"
+else
+  print_warning "gitleaks not found — run the brew section first, then re-run git section"
+fi
+
+# ── GitHub auth ───────────────────────────────────────────────────────────────
 print_info "Starting interactive GitHub authentication (browser will open)..."
 gh auth login --web --git-protocol ssh
 
 print_success "GitHub authentication complete"
+print_info "Tip: enable GitHub Secret Scanning on your org at:"
+print_info "  https://github.com/organizations/Matrix-Digital-tech/settings/security_analysis"

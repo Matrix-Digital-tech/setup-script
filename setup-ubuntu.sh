@@ -72,6 +72,38 @@ section_base() {
   sudo systemctl enable postgresql redis-server
   sudo systemctl start  postgresql redis-server
 
+  # gitleaks — install latest binary from GitHub releases
+  if ! command_exists gitleaks; then
+    print_info "Installing gitleaks..."
+    GITLEAKS_VERSION=$(curl -s https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+      | grep '"tag_name"' | cut -d'"' -f4 | tr -d 'v')
+    ARCH=$(dpkg --print-architecture)
+    [[ "$ARCH" == "amd64" ]] && GL_ARCH="x64" || GL_ARCH="arm64"
+    curl -sSfL \
+      "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_${GL_ARCH}.tar.gz" \
+      | sudo tar -xz -C /usr/local/bin gitleaks
+  fi
+
+  # Wire up gitleaks as a global pre-commit hook
+  HOOKS_DIR="$HOME/.config/git/hooks"
+  mkdir -p "$HOOKS_DIR"
+  cat > "$HOOKS_DIR/pre-commit" << 'HOOK'
+#!/usr/bin/env bash
+if command -v gitleaks &>/dev/null; then
+  gitleaks protect --staged --redact --no-banner -q
+  if [[ $? -ne 0 ]]; then
+    echo ""
+    echo "  gitleaks: potential secret detected in staged files."
+    echo "  Review the output above, remove the secret, then commit again."
+    echo "  To skip this check (not recommended): git commit --no-verify"
+    exit 1
+  fi
+fi
+HOOK
+  chmod +x "$HOOKS_DIR/pre-commit"
+  git config --global core.hooksPath "$HOOKS_DIR"
+  print_success "gitleaks installed and wired up as a global pre-commit hook"
+
   print_success "Base packages + PostgreSQL + Redis installed"
 }
 

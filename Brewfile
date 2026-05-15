@@ -33,6 +33,7 @@ brew "go"
 brew "gnupg"
 brew "pinentry-mac"
 brew "1password-cli"
+brew "gitleaks"       # secret scanning — pre-commit hook + manual scans
 cask "1password"
 
 # ── Cloud & DevOps ────────────────────────────────────────────────────────────
