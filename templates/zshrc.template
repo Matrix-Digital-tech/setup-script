@@ -61,16 +61,37 @@ alias gs='git status'
 alias gl='git log --oneline --graph --decorate --all'
 alias gd='git diff'
 
-# ── Claude Code profiles ──────────────────────────────────────────────────────
+# ── Claude Code ───────────────────────────────────────────────────────────────
 alias claude-pro="claude"
-alias claude-cms='AWS_PROFILE=cms CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-6 claude'
-alias claude-verdance='AWS_PROFILE=verdance CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-6 claude'
-alias claude-matrix='AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x AWS_BEARER_TOKEN_BEDROCK=$(cat ~/.aws/bedrock/matrix 2>/dev/null) CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-6 claude'
 
-# ── OpenCode ──────────────────────────────────────────────────────────────────
+# ── Google Workspace CLI (gws) ────────────────────────────────────────────────
+# Run 'gws auth' to authenticate on first use
+
+# ── Environment ───────────────────────────────────────────────────────────────
+export EDITOR="code --wait"
+
+# ── API Keys ──────────────────────────────────────────────────────────────────
+# Uncomment and fill in, or source from 1Password:
+# export PERPLEXITY_API_KEY="pplx-..."
+# To read from 1Password at shell startup:
+# export PERPLEXITY_API_KEY="$(op read 'op://Personal/Perplexity/api_key' 2>/dev/null)"
+
+# ── Local overrides ───────────────────────────────────────────────────────────
+# Machine-specific config — not committed to the repo
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# PROJECT-SPECIFIC CONFIG
+# ════════════════════════════════════════════════════════════════════════════════
+
+# ── Scintilla ─────────────────────────────────────────────────────────────────
+export SCINTILLA_HOME="$HOME/Documents/Github/scintilla"
+
+# ── CMS ───────────────────────────────────────────────────────────────────────
+alias claude-cms='AWS_PROFILE=cms CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-6 claude'
 alias opencode-cms='AWS_PROFILE=cms AWS_REGION=us-east-1 opencode'
 
-# ── Kion / CMS credential management ─────────────────────────────────────────
 kion-cms() {
   python3 -c "
 import re, sys
@@ -113,19 +134,8 @@ kion-rotate-cms() {
   echo "✅ Key rotated and saved to keychain."
 }
 
-# ── Google Workspace CLI (gws) ────────────────────────────────────────────────
-# Run 'gws auth' to authenticate on first use
+# ── Verdance ──────────────────────────────────────────────────────────────────
+alias claude-verdance='AWS_PROFILE=verdance CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-6 claude'
 
-# ── Environment ───────────────────────────────────────────────────────────────
-export SCINTILLA_HOME="$HOME/Documents/Github/scintilla"
-export EDITOR="code --wait"
-
-# ── API Keys ──────────────────────────────────────────────────────────────────
-# Uncomment and fill in, or source from 1Password:
-# export PERPLEXITY_API_KEY="pplx-..."
-# To read from 1Password at shell startup:
-# export PERPLEXITY_API_KEY="$(op read 'op://Personal/Perplexity/api_key' 2>/dev/null)"
-
-# ── Local overrides ───────────────────────────────────────────────────────────
-# Machine-specific config — not committed to the repo
-[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+# ── Matrix Digital ────────────────────────────────────────────────────────────
+alias claude-matrix='AWS_ACCESS_KEY_ID=x AWS_SECRET_ACCESS_KEY=x AWS_BEARER_TOKEN_BEDROCK=$(cat ~/.aws/bedrock/matrix 2>/dev/null) CLAUDE_CODE_USE_BEDROCK=1 AWS_REGION=us-east-1 ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-6 claude'
