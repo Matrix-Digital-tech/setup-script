@@ -158,7 +158,31 @@ if [[ "$OS" == "Linux" ]]; then
   echo "Kernel:  $(uname -r)"
 fi
 
+# ── Shell config files (both platforms) ──────────────────────────────────────
+hr; echo "## ~/.zshrc"
+if [[ -f "$HOME/.zshrc" ]]; then
+  cat "$HOME/.zshrc"
+else
+  echo "(not found)"
+fi
+
+hr; echo "## ~/.zshrc.local"
+if [[ -f "$HOME/.zshrc.local" ]]; then
+  cat "$HOME/.zshrc.local"
+else
+  echo "(not found)"
+fi
+
+hr; echo "## ~/.zshrc.new (pending merge)"
+if [[ -f "$HOME/.zshrc.new" ]]; then
+  cat "$HOME/.zshrc.new"
+else
+  echo "(not found)"
+fi
+
 hr
 echo ""
-echo "# Paste this output into Claude and ask:"
-echo "# 'Compare this to my setup-script repo and flag anything worth adding'"
+echo "# Paste this output into a Claude Code session in the setup-script repo and ask:"
+echo "# 'Compare this audit to the Brewfile and setup scripts."
+echo "#  Flag anything worth adding, and note any aliases or config in .zshrc"
+echo "#  that should be pulled into the zshrc template.'"
