@@ -2,6 +2,20 @@
 
 Modular setup scripts for AI-enabled product management and development.
 
+## Getting started
+
+```bash
+# 1. Clone the repo
+git clone https://github.com/Matrix-Digital-tech/setup-script.git
+cd setup-script
+
+# 2. Run the setup script for your machine
+bash setup-mac.sh       # macOS
+bash setup-ubuntu.sh    # Ubuntu
+```
+
+---
+
 ## Machines supported
 
 | Script | Target |
@@ -66,14 +80,47 @@ Available sections: `brew`, `shell`, `git`, `defaults`, `npm`, `claude`
 
 ### After running
 
-1. Merge shell config: `diff ~/.zshrc ~/.zshrc.new`
-2. Restart terminal or `source ~/.zshrc`
-3. Authenticate Google Workspace CLI: `gws auth`
-4. Add Perplexity API key to `~/.zshrc.local`: `export PERPLEXITY_API_KEY=pplx-...`
+**1. Merge the generated shell config**
+
+The script writes a new config to `~/.zshrc.new` — it never overwrites your existing `~/.zshrc`. Review and merge it:
+
+```bash
+# See what's different
+diff ~/.zshrc ~/.zshrc.new
+
+# Option A — append the new config to your existing one
+cat ~/.zshrc.new >> ~/.zshrc
+
+# Option B — replace entirely (if starting fresh)
+cp ~/.zshrc ~/.zshrc.backup
+cp ~/.zshrc.new ~/.zshrc
+```
+
+**2. Reload your shell**
+
+```bash
+source ~/.zshrc
+# or open a new terminal window
+```
+
+**3. Finish authentication**
+
+```bash
+gws auth        # Google Workspace CLI (Drive, Gmail, Calendar, etc.)
+gh auth login   # GitHub (if you skipped the git section)
+```
+
+**4. Add your Perplexity API key**
+
+```bash
+echo 'export PERPLEXITY_API_KEY=pplx-...' >> ~/.zshrc.local
+source ~/.zshrc
+```
 
 ### Local overrides
 
-Create `~/.setup.local` for machine-specific config. It's sourced at the end of setup and is not committed to this repo. Create `~/.zshrc.local` for shell overrides — it's sourced at the end of the generated `.zshrc`.
+- `~/.setup.local` — sourced at the end of setup. Add machine-specific install steps here without touching the repo.
+- `~/.zshrc.local` — sourced at the end of `~/.zshrc`. Add machine-specific shell config here.
 
 ---
 
@@ -123,6 +170,29 @@ Interactive — prompts before each section. Auto-detects NVIDIA and Intel Arc G
 ### NVIDIA driver note
 
 RTX 5090 (Blackwell) requires driver 570+ with Open Kernel Modules. The script blacklists nouveau and prints instructions. Manual driver download from nvidia.com required. Full instructions: `Cowork/Assembly-and-OS-Guide.md Phase 10`.
+
+---
+
+## Auditing a machine
+
+Run `audit.sh` on any machine to generate an inventory of everything installed. Useful for finding tools on an existing machine that should be added to the setup script.
+
+```bash
+# Clone the repo first (or just download audit.sh directly)
+git clone https://github.com/Matrix-Digital-tech/setup-script.git
+cd setup-script
+
+# Run and save output to a file
+bash audit.sh > audit.txt
+
+# Or pipe directly to your clipboard (macOS)
+bash audit.sh | pbcopy
+```
+
+Then paste the output into a Claude Code session in this repo and ask:
+> "Compare this audit output to the Brewfile and setup scripts — flag anything worth adding"
+
+The audit covers: Homebrew formulae + casks, `/Applications`, npm globals, pip packages, uv tools, key CLI tools, GPU info, Docker containers, and Ollama models.
 
 ---
 
