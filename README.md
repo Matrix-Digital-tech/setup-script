@@ -129,6 +129,75 @@ op item create --category=apikey --title="Perplexity" --vault=Development api_ke
 op read 'op://Development/Perplexity/api_key'
 ```
 
+### Multiple GitHub profiles (personal + work + CMS)
+
+The setup script generates one SSH key for your primary profile. If you have multiple GitHub accounts — e.g. personal (`github.com`), work (`github.com`), and CMS (`github.cms.gov`) — each needs its own key, because GitHub won't allow the same public key on two accounts on the same host.
+
+**1. Generate a key per profile**
+
+```bash
+ssh-keygen -t ed25519 -C "you@personal.com" -f ~/.ssh/id_ed25519_personal -N ""
+ssh-keygen -t ed25519 -C "you@work.com"     -f ~/.ssh/id_ed25519_work     -N ""
+ssh-keygen -t ed25519 -C "you@cms.gov"      -f ~/.ssh/id_ed25519_cms      -N ""
+```
+
+Store each private key in 1Password (drag the file into a new SSH Key item). Once stored, you can delete the private key files from disk — 1Password's SSH agent serves them automatically.
+
+**2. Upload each public key to the right GitHub account**
+
+```bash
+gh auth login                                          # authenticate as personal first
+gh ssh-key add ~/.ssh/id_ed25519_personal.pub --title "Personal key"
+
+gh auth login --hostname github.cms.gov               # then CMS
+gh ssh-key add ~/.ssh/id_ed25519_cms.pub --title "CMS key" --hostname github.cms.gov
+```
+
+For the work account, log in to github.com as the work user and upload `id_ed25519_work.pub` via Settings → SSH keys.
+
+**3. Add host aliases to `~/.ssh/config`**
+
+Replace the generic `Host *` block the setup script wrote with per-profile entries:
+
+```
+# Personal GitHub
+Host github-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_personal.pub
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# Work GitHub
+Host github-work
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_work.pub
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# CMS GitHub Enterprise
+Host github.cms.gov
+  HostName github.cms.gov
+  User git
+  IdentityFile ~/.ssh/id_ed25519_cms.pub
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+```
+
+Note: `IdentityFile` points to the `.pub` file — 1Password holds the private key and signs via the agent socket.
+
+**4. Clone using the host alias**
+
+```bash
+git clone git@github-personal:porta-antiporta/repo.git
+git clone git@github-work:Matrix-Digital-tech/repo.git
+git clone git@github.cms.gov:org/repo.git              # uses actual hostname, no alias needed
+```
+
+For existing repos, update the remote:
+
+```bash
+git remote set-url origin git@github-work:Matrix-Digital-tech/repo.git
+```
+
 ### Local overrides
 
 - `~/.setup.local` — sourced at the end of setup. Add machine-specific install steps here without touching the repo.
