@@ -14,6 +14,8 @@ bash setup-mac.sh       # macOS
 bash setup-ubuntu.sh    # Ubuntu
 ```
 
+**Setting up an existing machine?** Run `audit.sh` first to inventory what's already installed, then paste the output into a Claude Code session in this repo to compare against the Brewfile and scripts. See the [Auditing a machine](#auditing-a-machine) section for details.
+
 ---
 
 ## Machines supported
