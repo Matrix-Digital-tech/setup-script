@@ -116,10 +116,10 @@ Store the key in 1Password, then the `.zshrc` template reads it automatically at
 
 ```bash
 # Store once in 1Password (replace with your actual key)
-op item create --category=apikey --title="Perplexity" --vault=Personal api_key=pplx-...
+op item create --category=apikey --title="Perplexity" --vault=Development api_key=pplx-...
 
 # Verify the path works
-op read 'op://Personal/Perplexity/api_key'
+op read 'op://Development/Perplexity/api_key'
 ```
 
 ### Local overrides
