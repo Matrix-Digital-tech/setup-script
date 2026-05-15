@@ -34,7 +34,8 @@ setup-script/
 │   ├── utils.sh              # Shared helpers (print_*, ask, command_exists)
 │   ├── brew.sh               # Homebrew + Brewfile install
 │   ├── shell.sh              # Oh My Zsh + plugins + .zshrc template
-│   ├── git.sh                # Git global config + GitHub auth
+│   ├── ssh.sh                # SSH key generation + 1Password SSH agent
+│   ├── git.sh                # Git global config + commit signing + GitHub auth
 │   ├── macos-defaults.sh     # macOS system preferences (defaults write)
 │   ├── npm-globals.sh        # Global npm tools (gws, etc.)
 │   └── claude.sh             # Claude Code MCP config (Perplexity + gws)
@@ -55,19 +56,21 @@ bash setup-mac.sh --all
 bash setup-mac.sh --section brew --section shell
 ```
 
-Available sections: `brew`, `shell`, `git`, `defaults`, `npm`, `claude`
+Available sections: `brew`, `shell`, `ssh`, `git`, `defaults`, `npm`, `claude`
 
 ### What gets installed (macOS)
 
-**Shell & Terminal:** Oh My Zsh, Starship, fzf, zoxide, eza, bat, fd, tldr, jq, git-delta, Meslo Nerd Font
+**Shell & Terminal:** Oh My Zsh, Starship, fzf, zoxide, eza, bat, fd, tldr, jq, git-delta, direnv, Meslo Nerd Font
 
 **Editors:** VS Code, Zed
 
-**AI Tools:** Claude Code, LM Studio, Perplexity MCP (in Claude Code), gws MCP (Google Workspace)
+**AI Tools:** Claude Code, LM Studio, Perplexity MCP (in Claude Code), gws MCP (Google Workspace), GitHub Copilot CLI
 
 **Languages:** fnm (Node version manager), uv (Python), Go
 
 **Cloud & DevOps:** AWS CLI, gh CLI, Docker Desktop, 1Password + CLI
+
+**SSH & Signing:** SSH key (ed25519) generated and uploaded to GitHub, 1Password SSH agent configured, git commit signing via SSH/1Password
 
 **Databases:** PostgreSQL 16, Redis
 
@@ -103,14 +106,18 @@ source ~/.zshrc
 # or open a new terminal window
 ```
 
-**3. Finish authentication**
+**3. Enable 1Password SSH agent**
+
+Open 1Password → **Settings → Developer → SSH Agent** and toggle it on. This activates the agent socket that `~/.ssh/config` and `SSH_AUTH_SOCK` point to.
+
+**4. Finish authentication**
 
 ```bash
 gws auth        # Google Workspace CLI (Drive, Gmail, Calendar, etc.)
 gh auth login   # GitHub (if you skipped the git section)
 ```
 
-**4. Add your Perplexity API key to 1Password**
+**5. Add your Perplexity API key to 1Password**
 
 Store the key in 1Password, then the `.zshrc` template reads it automatically at shell startup via the `op` CLI — no plain text keys in config files.
 

@@ -57,7 +57,7 @@ section_base() {
   sudo apt update && sudo apt upgrade -y
   sudo apt install -y \
     build-essential curl wget git zsh tmux htop unzip \
-    fzf ripgrep fd-find bat jq \
+    fzf ripgrep fd-find bat jq direnv \
     ca-certificates gnupg lsb-release software-properties-common \
     python3 python3-pip python3-venv \
     postgresql postgresql-contrib redis-server

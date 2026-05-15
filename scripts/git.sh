@@ -60,9 +60,35 @@ else
   print_warning "gitleaks not found — run the brew section first, then re-run git section"
 fi
 
+# ── Commit signing (SSH via 1Password) ───────────────────────────────────────
+OP_SSH_SIGN="/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+if [[ -f "$OP_SSH_SIGN" ]]; then
+  git config --global gpg.format ssh
+  git config --global gpg.ssh.program "$OP_SSH_SIGN"
+  git config --global commit.gpgsign true
+  git config --global tag.gpgsign true
+  # Use the local SSH public key as the signing key if it exists
+  if [[ -f "$HOME/.ssh/id_ed25519.pub" ]]; then
+    git config --global user.signingkey "key::$(cat "$HOME/.ssh/id_ed25519.pub")"
+    print_success "Commit signing enabled — key: ~/.ssh/id_ed25519.pub via 1Password"
+  else
+    print_success "Commit signing enabled — run the ssh section first to set the signing key"
+    print_info "Then: git config --global user.signingkey 'key::$(cat ~/.ssh/id_ed25519.pub)'"
+  fi
+  print_info "Store your SSH key in 1Password so it's used as both auth + signing key"
+else
+  print_warning "1Password not found — install it first (brew section), then re-run git section"
+fi
+
 # ── GitHub auth ───────────────────────────────────────────────────────────────
 print_info "Starting interactive GitHub authentication (browser will open)..."
 gh auth login --web --git-protocol ssh
+
+# ── GitHub Copilot CLI ────────────────────────────────────────────────────────
+print_info "Installing GitHub Copilot CLI extension..."
+gh extension install github/gh-copilot 2>/dev/null \
+  && print_success "GitHub Copilot CLI installed — try: gh copilot suggest 'list files by size'" \
+  || print_info "gh copilot already installed"
 
 print_success "GitHub authentication complete"
 print_info "Tip: enable GitHub Secret Scanning on your org at:"

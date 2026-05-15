@@ -46,6 +46,7 @@ brew "redis"
 # ── CLI Utilities ─────────────────────────────────────────────────────────────
 brew "ripgrep"
 brew "rlwrap"
+brew "direnv"          # per-project env vars via .envrc files
 
 # ── Editors & IDEs ────────────────────────────────────────────────────────────
 cask "visual-studio-code"
