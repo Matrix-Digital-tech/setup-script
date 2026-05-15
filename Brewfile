@@ -47,6 +47,7 @@ brew "redis"
 brew "ripgrep"
 brew "rlwrap"
 brew "direnv"          # per-project env vars via .envrc files
+brew "chezmoi"         # dotfiles manager
 
 # ── Editors & IDEs ────────────────────────────────────────────────────────────
 cask "visual-studio-code"

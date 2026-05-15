@@ -77,6 +77,7 @@ run_section "Git config + GitHub auth"              "$SCRIPT_DIR/scripts/git.sh"
 run_section "macOS system defaults"                 "$SCRIPT_DIR/scripts/macos-defaults.sh" "defaults"
 run_section "npm globals (gws + tools)"             "$SCRIPT_DIR/scripts/npm-globals.sh"   "npm"
 run_section "Claude Code MCP (Perplexity + gws)"    "$SCRIPT_DIR/scripts/claude.sh"        "claude"
+run_section "Dotfiles (chezmoi)"                    "$SCRIPT_DIR/scripts/dotfiles.sh"      "dotfiles"
 
 # ── Local override hook ───────────────────────────────────────────────────────
 if [[ -f "$HOME/.setup.local" ]]; then
