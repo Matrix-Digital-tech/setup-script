@@ -110,11 +110,16 @@ gws auth        # Google Workspace CLI (Drive, Gmail, Calendar, etc.)
 gh auth login   # GitHub (if you skipped the git section)
 ```
 
-**4. Add your Perplexity API key**
+**4. Add your Perplexity API key to 1Password**
+
+Store the key in 1Password, then the `.zshrc` template reads it automatically at shell startup via the `op` CLI — no plain text keys in config files.
 
 ```bash
-echo 'export PERPLEXITY_API_KEY=pplx-...' >> ~/.zshrc.local
-source ~/.zshrc
+# Store once in 1Password (replace with your actual key)
+op item create --category=apikey --title="Perplexity" --vault=Personal api_key=pplx-...
+
+# Verify the path works
+op read 'op://Personal/Perplexity/api_key'
 ```
 
 ### Local overrides

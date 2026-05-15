@@ -71,10 +71,10 @@ alias claude-pro="claude"
 export EDITOR="code --wait"
 
 # ── API Keys ──────────────────────────────────────────────────────────────────
-# Uncomment and fill in, or source from 1Password:
-# export PERPLEXITY_API_KEY="pplx-..."
-# To read from 1Password at shell startup:
-# export PERPLEXITY_API_KEY="$(op read 'op://Personal/Perplexity/api_key' 2>/dev/null)"
+# Keys are read from 1Password at shell startup — never stored as plain text.
+# Store each key in 1Password first, then update the path below.
+# Format: op://VaultName/ItemName/field  (find paths via: op item list)
+export PERPLEXITY_API_KEY="$(op read 'op://Personal/Perplexity/api_key' 2>/dev/null)"
 
 # ── Local overrides ───────────────────────────────────────────────────────────
 # Machine-specific config — not committed to the repo
