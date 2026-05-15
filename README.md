@@ -58,7 +58,7 @@ bash setup-mac.sh --all
 bash setup-mac.sh --section brew --section shell
 ```
 
-Available sections: `brew`, `shell`, `ssh`, `git`, `defaults`, `npm`, `claude`
+Available sections: `brew`, `shell`, `ssh`, `git`, `defaults`, `npm`, `claude`, `dotfiles`
 
 ### What gets installed (macOS)
 
