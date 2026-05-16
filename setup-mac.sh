@@ -6,7 +6,7 @@
 #   bash setup-mac.sh --all     # run all sections without prompting
 #   bash setup-mac.sh --section brew --section shell   # run specific sections
 
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/scripts/utils.sh"
@@ -63,7 +63,9 @@ run_section() {
   if $should_run; then
     print_header "$label"
     # shellcheck source=/dev/null
-    source "$script"
+    if ! source "$script"; then
+      print_warning "Section '$label' finished with errors — re-run with: bash setup-mac.sh --section $key"
+    fi
   else
     print_info "Skipping: $label"
   fi
