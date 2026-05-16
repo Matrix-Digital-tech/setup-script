@@ -11,7 +11,7 @@ chmod 700 "$HOME/.ssh"
 # ── SSH key ───────────────────────────────────────────────────────────────────
 if [[ ! -f "$SSH_KEY" ]]; then
   print_prompt "Email for SSH key (used as label — typically your git email): "
-  read -r SSH_EMAIL
+  read -r SSH_EMAIL </dev/tty
   ssh-keygen -t ed25519 -C "$SSH_EMAIL" -f "$SSH_KEY" -N ""
   print_success "SSH key generated: $SSH_KEY"
 else
