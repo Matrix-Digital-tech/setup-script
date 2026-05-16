@@ -2,9 +2,6 @@
 # Run: brew bundle --file=Brewfile
 # Install via setup-mac.sh or directly: brew bundle
 
-tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
-
 # ── Fonts ─────────────────────────────────────────────────────────────────────
 cask "font-meslo-lg-nerd-font"
 
