@@ -10,7 +10,7 @@ Modular setup scripts for AI-enabled product management and development.
 xcode-select --install
 ```
 
-Then clone and run:
+A dialog will pop up asking to install Command Line Developer Tools — click **Install** and wait for it to finish (~5 minutes). Then clone and run:
 
 ```bash
 git clone https://github.com/Matrix-Digital-tech/setup-script.git
