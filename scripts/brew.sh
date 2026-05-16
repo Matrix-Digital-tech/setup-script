@@ -28,9 +28,11 @@ if command_exists fzf; then
   "$(brew --prefix)/opt/fzf/install" --key-bindings --completion --no-update-rc --no-bash --no-fish 2>/dev/null || true
 fi
 
-# Start services
-brew services start postgresql@16 2>/dev/null || true
-brew services start redis 2>/dev/null || true
+# Database services — start manually when needed
+print_info "PostgreSQL and Redis installed but not auto-started."
+print_info "Start:   brew services start postgresql@16 && brew services start redis"
+print_info "Stop:    brew services stop postgresql@16  && brew services stop redis"
+print_info "Status:  brew services list"
 
 # Manual installs (no cask)
 print_header "Manual installs (no Homebrew cask)"
