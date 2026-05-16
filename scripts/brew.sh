@@ -21,7 +21,7 @@ fi
 
 # Install from Brewfile
 print_info "Installing packages from Brewfile (skips already-installed)..."
-brew bundle --file="$REPO_ROOT/Brewfile" --no-lock
+brew bundle --file="$REPO_ROOT/Brewfile"
 
 # fzf key bindings + shell completion
 if command_exists fzf; then
