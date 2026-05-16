@@ -13,7 +13,7 @@ if [[ -d "$HOME/.local/share/chezmoi/.git" ]]; then
   chezmoi update
 else
   print_info "Initializing dotfiles from $DOTFILES_REPO..."
-  chezmoi init --apply "$DOTFILES_REPO"
+  chezmoi init --apply --ssh "$DOTFILES_REPO"
 fi
 
 print_success "Dotfiles applied"

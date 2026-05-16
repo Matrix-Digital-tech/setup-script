@@ -4,9 +4,9 @@
 CLAUDE_SETTINGS="$HOME/.claude/settings.json"
 
 if [[ ! -f "$CLAUDE_SETTINGS" ]]; then
-  print_warning "~/.claude/settings.json not found"
-  print_info "Install Claude Code first (brew install --cask claude-code), then re-run this section"
-  return 0
+  print_info "~/.claude/settings.json not found — creating it (Claude Code not yet launched)"
+  mkdir -p "$(dirname "$CLAUDE_SETTINGS")"
+  echo '{}' > "$CLAUDE_SETTINGS"
 fi
 
 # ── Update channel ────────────────────────────────────────────────────────────
