@@ -65,7 +65,16 @@ bash setup-mac.sh --all
 bash setup-mac.sh --section brew --section shell
 ```
 
-Available sections: `brew`, `shell`, `ssh`, `git`, `defaults`, `npm`, `claude`, `dotfiles`
+| Section | Description | Docs |
+|---|---|---|
+| `brew` | Installs Homebrew and all packages, apps, and fonts from the Brewfile | [→ details](docs/brew.md) |
+| `shell` | Installs Oh My Zsh + plugins and generates `~/.zshrc.new` from the project template | [→ details](docs/shell.md) |
+| `ssh` | Generates an ed25519 SSH key, configures the 1Password SSH agent, and uploads the public key to GitHub | [→ details](docs/ssh.md) |
+| `git` | Sets global git config, installs the gitleaks pre-commit hook, enables SSH commit signing via 1Password, authenticates the GitHub CLI, and installs GitHub Copilot CLI | [→ details](docs/git.md) |
+| `defaults` | Applies macOS system preferences for Finder, keyboard, Dock, screenshots, and trackpad | [→ details](docs/defaults.md) |
+| `npm` | Ensures Node via fnm, installs the Google Workspace CLI (`gws`) globally | [→ details](docs/npm.md) |
+| `claude` | Sets Claude Code to the latest update channel and registers Perplexity and Google Workspace MCP servers | [→ details](docs/claude.md) |
+| `dotfiles` | Applies personal dotfiles from `Matrix-Digital-tech/dotfiles` via chezmoi | [→ details](docs/dotfiles.md) |
 
 ### What gets installed (macOS)
 
