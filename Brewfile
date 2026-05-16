@@ -29,7 +29,7 @@ brew "go"
 # ── Security ──────────────────────────────────────────────────────────────────
 brew "gnupg"
 brew "pinentry-mac"
-brew "1password-cli"
+cask "1password-cli"
 brew "gitleaks"       # secret scanning — pre-commit hook + manual scans
 cask "1password"
 
