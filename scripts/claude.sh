@@ -9,6 +9,23 @@ if [[ ! -f "$CLAUDE_SETTINGS" ]]; then
   return 0
 fi
 
+# ── Update channel ────────────────────────────────────────────────────────────
+print_info "Setting Claude Code update channel to 'latest'..."
+python3 - "$CLAUDE_SETTINGS" << 'PYTHON'
+import json, sys
+
+path = sys.argv[1]
+with open(path) as f:
+    cfg = json.load(f)
+
+cfg["autoUpdatesChannel"] = "latest"
+
+with open(path, "w") as f:
+    json.dump(cfg, f, indent=2)
+print("  autoUpdatesChannel = latest")
+PYTHON
+print_success "Claude Code set to latest release channel"
+
 # ── Perplexity MCP ────────────────────────────────────────────────────────────
 # Key is read from 1Password at runtime — never stored in settings.json as plain text.
 print_info "Configuring Perplexity MCP (key read from 1Password at runtime)..."
