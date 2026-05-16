@@ -4,15 +4,22 @@ Modular setup scripts for AI-enabled product management and development.
 
 ## Getting started
 
+**Fresh Mac?** Run this first — it installs git and the build tools Homebrew needs (no full Xcode download required):
+
 ```bash
-# 1. Clone the repo
+xcode-select --install
+```
+
+A dialog will pop up asking to install Command Line Developer Tools — click **Install** and wait for it to finish (~5 minutes). Then clone and run:
+
+```bash
 git clone https://github.com/Matrix-Digital-tech/setup-script.git
 cd setup-script
-
-# 2. Run the setup script for your machine
 bash setup-mac.sh       # macOS
 bash setup-ubuntu.sh    # Ubuntu
 ```
+
+The `brew` section installs the latest Homebrew git, which replaces the system one. By the end of setup you'll have a fully up-to-date git.
 
 **Setting up an existing machine?** Run `audit.sh` first to inventory what's already installed, then paste the output into a Claude Code session in this repo to compare against the Brewfile and scripts. See the [Auditing a machine](#auditing-a-machine) section for details.
 
