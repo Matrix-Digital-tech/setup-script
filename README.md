@@ -4,6 +4,14 @@ Modular setup scripts for AI-enabled product management and development.
 
 ## Getting started
 
+**Fresh Mac?** `git` isn't pre-installed — get it first via Xcode Command Line Tools (a one-time prompt, no full Xcode download required):
+
+```bash
+xcode-select --install
+```
+
+Wait for the installer to finish, then:
+
 ```bash
 # 1. Clone the repo
 git clone https://github.com/Matrix-Digital-tech/setup-script.git
@@ -12,6 +20,15 @@ cd setup-script
 # 2. Run the setup script for your machine
 bash setup-mac.sh       # macOS
 bash setup-ubuntu.sh    # Ubuntu
+```
+
+Alternatively, if you'd rather not install Xcode CLI tools manually, you can bootstrap with `curl` — no git required:
+
+```bash
+curl -fsSL https://github.com/Matrix-Digital-tech/setup-script/archive/refs/heads/main.zip \
+  -o /tmp/setup-script.zip \
+  && unzip /tmp/setup-script.zip -d /tmp \
+  && bash /tmp/setup-script-main/setup-mac.sh
 ```
 
 **Setting up an existing machine?** Run `audit.sh` first to inventory what's already installed, then paste the output into a Claude Code session in this repo to compare against the Brewfile and scripts. See the [Auditing a machine](#auditing-a-machine) section for details.
