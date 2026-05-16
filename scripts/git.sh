@@ -2,10 +2,10 @@
 # scripts/git.sh — Git global config + GitHub authentication
 
 print_prompt "Git user name: "
-read -r GIT_NAME
+read -r GIT_NAME </dev/tty
 
 print_prompt "Git email: "
-read -r GIT_EMAIL
+read -r GIT_EMAIL </dev/tty
 
 git config --global user.name "$GIT_NAME"
 git config --global user.email "$GIT_EMAIL"

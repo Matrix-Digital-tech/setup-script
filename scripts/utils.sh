@@ -13,14 +13,14 @@ print_success() { echo -e "${GREEN}✓ $1${RESET}"; }
 print_info()    { echo -e "  ${BLUE}$1${RESET}"; }
 print_warning() { echo -e "  ${YELLOW}⚠ $1${RESET}"; }
 print_error()   { echo -e "${RED}✗ $1${RESET}" >&2; }
-print_prompt()  { echo -en "${BOLD}$1${RESET}"; }
+print_prompt()  { echo -e "\n${BOLD}${YELLOW}  ▶ $1${RESET}"; }
 
 command_exists() { command -v "$1" &>/dev/null; }
 
 ask() {
   local prompt="$1"
-  local default="${2:-n}"
-  print_prompt "$prompt [y/N] "
-  read -r answer
+  echo ""
+  echo -e "${BOLD}${YELLOW}  ▶ $prompt [y/N]${RESET} "
+  read -r answer </dev/tty
   [[ "$answer" =~ ^[Yy]$ ]]
 }
