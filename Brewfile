@@ -63,6 +63,7 @@ cask "figma"
 cask "rectangle"
 cask "raycast"
 cask "ghostty"
+cask "balenaetcher"     # flash OS images to SD cards and USB drives
 
 # NOTE: The following require manual install (no cask available):
 #   - OpenWhispr:  https://openwhispr.com/download
